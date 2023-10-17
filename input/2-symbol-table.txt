@@ -1,0 +1,7 @@
+int add ( double , int ) ;
+int a , b = 10 ;
+char c = 'd' ;
+float x = 15.8 ;
+double multiply ( double , char ) ;
+string name = "Mahimai" ;
+short rollno = 1051 ;
