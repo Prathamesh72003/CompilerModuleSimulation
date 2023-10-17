@@ -3,6 +3,7 @@ from typing import List
 import re
 import os
 import pandas as pd
+import json
 
 app = Flask(__name__)
 
@@ -39,7 +40,7 @@ class Tokenizer:
         keywords: List[str] = ["main", "int", "float", "double", "long",
                                "short", "string", "char", "if", "else", "while",
                                "do", "break", "continue"]
-        operators: List[str] = ["+", "-", "*", "/", "<", ">", "=", "|", "&"]
+        operators: List[str] = ["+", "-", "*", "/", "<", ">", "=", "|", "&", "^", "~", "%"]
         punctuations: List[str] = ["{", "}", "(", ")", ";", "[", "]", ".", "&"]
         identifiers = r'\b[A-Za-z_][A-Za-z0-9_]*\b'
         constants = r'\b[0-9][0-9]*\b'
@@ -188,11 +189,19 @@ def tokenize():
     output_file_path = os.path.join(output_directory, 'tokenization_output.txt')
     scanner.start_scanning(output_file_path)
 
-    # Read the tokenization output and send it back to the client
+    # Read the tokenization output and store it in a list
     with open(output_file_path, 'r') as f:
-        tokenization_output = f.read()
+        tokenization_output = f.readlines()
 
-    return tokenization_output
+    # Prepare the data as a list of dictionaries
+    tokenization_data = []
+    for line in tokenization_output:
+        # Assuming tokenization_output.txt file has one token per line
+        tokenization_data.append({'token': line.strip()})
+
+    # Convert the data to JSON and return
+    # print(tokenization_data)
+    return json.dumps(tokenization_data)
 
 # route for symbolTable
 @app.route('/generate_symbol_table', methods=['POST'])
