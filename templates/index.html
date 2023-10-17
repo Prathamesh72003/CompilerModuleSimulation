@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Intermediate Code Generator</title>
-  <style>
+  <head>
+    <title>Intermediate Code Generator</title>
+    <style>
     * {
     box-sizing: border-box;
-  }
-  
-  :root {
+    }
+
+    :root {
     --color-primary: #c484cc;
-  }
-  
-  body {
+    }
+
+    body {
     font-family: monospace;
     background: #12161f;
     color: white;
@@ -19,9 +19,9 @@
     height: 94vh;
     display: grid;
     place-items: center;
-  }
-  
-  nav {
+    }
+
+    nav {
     position: fixed;
     background: #3f2d41;
     font-weight: 400;
@@ -31,9 +31,9 @@
     width: 80%;
     top: 0;
     margin-top: 30px;
-  }
-  
-  nav .item {
+    }
+
+    nav .item {
     font-size: 0.8rem;
     display: inline-block;
     position: relative;
@@ -44,9 +44,9 @@
     height: 60px;
     line-height: 60px;
     text-align: center;
-  }
-  
-  .dropdown {
+    }
+
+    .dropdown {
     overflow: hidden;
     list-style: none;
     position: absolute;
@@ -54,93 +54,132 @@
     width: 100%;
     left: 0;
     top: 62px;
-  }
-  .dropdown > div {
+    }
+    .dropdown > div {
     transform: translate(0, -100%);
     transition: all 0.5s 0.1s;
     position: relative;
-  }
-  
-  .dropdown a {
+    }
+
+    .dropdown a {
     display: block;
     padding: 0;
     width: 100%;
     height: 40px;
     line-height: 40px;
     background: var(--color-primary);
-  }
-  
-  .dropdown a:hover {
+    }
+
+    .dropdown a:hover {
     background: #a567ad;
-  }
-  .underline {
-  height: 6px;
-  background: var(--color-primary);
-  position: absolute;
-  bottom: 0;
-  width: 25%;
-  z-index: 2;
-  pointer-events: none;
-  transition: 0.35s;
-}
+    }
+    .underline {
+    height: 6px;
+    background: var(--color-primary);
+    position: absolute;
+    bottom: 0;
+    width: 25%;
+    z-index: 2;
+    pointer-events: none;
+    transition: 0.35s;
+    }
 
-.nav-selected {
-  transform: translate(0);
-}
+    .nav-selected {
+    transform: translate(0);
+    }
 
-  </style>
-</head>
-<body>
+    </style>
+  </head>
+  <body>
 
-  <nav>
-    <a class="item" id="home" onclick="toggleSection('sec1')" style="text-decoration: none; color: white;">Tokenization</a>
-    <a class="item" id="about" onclick="toggleSection('sec2')" style="text-decoration: none; color: white;">Symbol Table</a>
-    <div class="item" id="skills" onclick="toggleSection('sec3')" style="text-decoration: none; color: white;">Macro To C</div>
-    <a class="item" id="contact" onclick="toggleSection('sec4')" style="text-decoration: none; color: white;">Three Code Genration</a>
-    <div class="underline" id="underline"></div>
-  </nav>
-  
+    <nav>
+      <a class="item" id="home" onclick="toggleSection('sec1')" style="text-decoration: none; color: white;">Tokenization</a>
+      <a class="item" id="about" onclick="toggleSection('sec2')" style="text-decoration: none; color: white;">Symbol Table</a>
+      <div class="item" id="skills" onclick="toggleSection('sec3')" style="text-decoration: none; color: white;">Macro To C</div>
+      <a class="item" id="contact" onclick="toggleSection('sec4')" style="text-decoration: none; color: white;">Three Code Genration</a>
+      <div class="underline" id="underline"></div>
+    </nav>
 
-  <section id="sec1">  
 
+<section id="sec1">
     <h1>Tokenization</h1>
     <form id="uploadForm" enctype="multipart/form-data">
         <input type="file" name="file" id="file" accept=".txt">
         <button type="button" onclick="uploadFile()">Tokenize</button>
     </form>
     <div id="output"></div>
+</section>
 
-  </section>
+    <section id="sec2">  
 
-  <section id="sec2">  
-
-    <h1>Symbol Table Generator</h1>
-    <form id="fileUploadForm" enctype="multipart/form-data">
+      <h1>Symbol Table Generator</h1>
+      <form id="fileUploadForm" enctype="multipart/form-data">
         <input type="file" name="file" id="fileInput">
         <button type="submit" id="submitButton">Generate Symbol Table</button>
-    </form>
-    <div id="symboloutput"></div>
+      </form>
+      <div id="symboloutput"></div>
 
-  </section>
+      <style>
+      /* Add styles for the table */
+      table {
+      border-collapse: collapse;
+      width: 80%; /* Adjust the width as needed */
+      margin: 20px auto; /* Center the table and add some margin */
+      border-radius: 10px; /* Add rounded corners to the table */
+      overflow: hidden; /* Hide the table's overflow content */
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); 
+      }
 
-  <section id="sec3">  
+      table, th, td {
+      border: 2px solid white; /* Add border to table, th, and td */
+      color: white; /* Text color */
+      }
 
-    <h1>MACRO TO C CODE</h1>
+      th, td {
+      padding: 10px; /* Adjust padding as needed */
+      text-align: center;
+      border-bottom: 1px solid #ddd;
 
-  </section>
+      }
+      th{
+      color: #12161f;
+      background-color: #f2f2f2;
 
-  <section id="sec4">  
+      }
 
-    <h1>Intermediate Code Generator</h1>
-    <label for="expression">Enter Expression:</label>
-    <input type="text" id="expression" placeholder="e.g., a + b * c" /><br /><br />
-    <button onclick="generateCode()">Generate Three Address Code</button>
-    <br /><br />
-    <div id="threecodeoutput"></div>
+      /* Move the table slightly below the section */
+      #symboloutput table {
+      margin-top: 50px; /* Adjust the margin-top as needed */
+      }
 
-  </section>
+      .glow:hover {
+      transition: 0.3s;
+      box-shadow: 0 0 20px 5px rgba(0, 255, 0, 0.8); /* Change the color and size as desired */
+      }
+      </style>
 
-  <script>
+
+    </section>
+
+    <section id="sec3">  
+
+      <h1>MACRO TO C CODE</h1>
+
+    </section>
+
+    <section id="sec4">  
+
+      <h1>Intermediate Code Generator</h1>
+      <label for="expression">Enter Expression:</label>
+      <input type="text" id="expression" placeholder="e.g., a + b * c" /><br /><br />
+      <button onclick="generateCode()">Generate Three Address Code</button>
+      <br /><br />
+      <div id="threecodeoutput"></div>
+
+    </section>
+
+
+    <script>
 
     const items = document.querySelectorAll('.item');
     const underline = document.getElementById('underline');
@@ -171,7 +210,7 @@
     }
 
     // SCRIPT FUNCTION FOR TOKENIZATION
-    function uploadFile() {
+        function uploadFile() {
         const fileInput = document.getElementById('file');
         const file = fileInput.files[0];
 
@@ -182,12 +221,51 @@
             method: 'POST',
             body: formData
         })
-        .then(response => response.text())
+        .then(response => response.json())
         .then(data => {
-            document.getElementById('output').innerText = data;
-        });
-      }
+            const outputDiv = document.getElementById('output');
 
+            // Create a table element
+            const table = document.createElement('table');
+            table.id = 'tokenizationTable';
+
+            // Create table headers
+            const headers = document.createElement('tr');
+            const th1 = document.createElement('th');
+            const th2 = document.createElement('th');
+            th1.textContent = 'Token Type';
+            th2.textContent = 'Value';
+            headers.appendChild(th1);
+            headers.appendChild(th2);
+            table.appendChild(headers);
+
+            // Populate table with tokenization data
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                const cell1 = document.createElement('td');
+                const cell2 = document.createElement('td');
+                const tokenString = item.token.substring(2, item.token.length - 2);
+                const [tokenType, value] = tokenString.split(', ');
+
+                cell1.textContent = tokenType;
+                cell2.textContent = value;
+                row.appendChild(cell1);
+                row.appendChild(cell2);
+                //cell1.classList.add('glow');
+                //cell2.classList.add('glow');
+                row.classList.add('glow');
+                table.appendChild(row);
+            });
+
+            // Clear previous content and append the table to the output div
+            outputDiv.innerHTML = '';
+            outputDiv.appendChild(table);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+      
     // SCRIPT FOR THREE CODE GEN
     function generateCode() {
       const expression = document.getElementById('expression').value;
@@ -198,21 +276,21 @@
         method: 'POST',
         body: formData
       })
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById('threecodeoutput').innerText = data;
-      })
-      .catch(error => console.error('Error:', error));
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('threecodeoutput').innerText = data;
+        })
+        .catch(error => console.error('Error:', error));
     }
-  </script>
+    </script>
 
-<script>
-  const fileInput = document.getElementById('fileInput');
-  const submitButton = document.getElementById('submitButton');
-  const outputDiv = document.getElementById('symboloutput');
-  const fileUploadForm = document.getElementById('fileUploadForm');
+    <script>
+    const fileInput = document.getElementById('fileInput');
+    const submitButton = document.getElementById('submitButton');
+    const outputDiv = document.getElementById('symboloutput');
+    const fileUploadForm = document.getElementById('fileUploadForm');
 
-  fileUploadForm.addEventListener('submit', async (event) => {
+    fileUploadForm.addEventListener('submit', async (event) => {
       event.preventDefault();
 
       const file = fileInput.files[0];
@@ -220,43 +298,45 @@
       formData.append('file', file);
 
       try {
-          const response = await fetch('/generate_symbol_table', {
-              method: 'POST',
-              body: formData
-          });
+        const response = await fetch('/generate_symbol_table', {
+          method: 'POST',
+          body: formData
+        });
 
-          if (response.ok) {
-              const data = await response.json();
-              displaySymbolTable(data);
-          } else {
-              outputDiv.innerHTML = `<p>Error generating symbol table.</p>`;
-          }
+        if (response.ok) {
+          const data = await response.json();
+          displaySymbolTable(data);
+        } else {
+          outputDiv.innerHTML = `<p>Error generating symbol table.</p>`;
+        }
       } catch (error) {
-          outputDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+        outputDiv.innerHTML = `<p>Error: ${error.message}</p>`;
       }
-  });
+    });
 
-  function displaySymbolTable(data) {
+    function displaySymbolTable(data) {
       const keyOrder = ['id', 'datatype', 'input_value', 'return_type', 'arguments'];
 
       let tableHTML = '<table border="1"><tr>';
       for (const key of keyOrder) {
-          tableHTML += `<th>${key}</th>`;
+        tableHTML += `<th>${key}</th>`;
       }
       tableHTML += '</tr>';
 
       const numRows = data['id'].length;
       for (let i = 0; i < numRows; i++) {
-          tableHTML += '<tr>';
-          for (const key of keyOrder) {
-              tableHTML += `<td>${data[key][i]}</td>`;
-          }
-          tableHTML += '</tr>';
+        tableHTML += '<tr>';
+        for (const key of keyOrder) {
+          // Add the "glow" class to enable glowing effect on hover
+          tableHTML += `<td class="glow">${data[key][i]}</td>`;
+        }
+        tableHTML += '</tr>';
       }
 
       tableHTML += '</table>';
       outputDiv.innerHTML = tableHTML;
-  }
+    }
+
 
 </script>
 </body>
