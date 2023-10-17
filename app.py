@@ -232,8 +232,139 @@ def generate_code():
     else:
         return 'Unable to generate three-address code.'
 
+def cal_follow(s, productions, first):
+    follow = set()
+    if len(s)!=1 :
+        return {}
+    if(s == list(productions.keys())[0]):
+        follow.add('$') 
+    
+    for i in productions:
+        for j in range(len(productions[i])):
+            if(s in productions[i][j]):
+                idx = productions[i][j].index(s)
+                
+                if(idx == len(productions[i][j])-1):
+                    if(productions[i][j][idx] == i):
+                        break
+                    else:
+                        f = cal_follow(i, productions, first)
+                        for x in f:
+                            follow.add(x)
+                else:
+                    while(idx != len(productions[i][j]) - 1):
+                        idx += 1
+                        if(not productions[i][j][idx].isupper()):
+                            follow.add(productions[i][j][idx])
+                            break
+                        else:
+                            f = cal_first(productions[i][j][idx], productions)
+                            
+                            if('ε' not in f):
+                                for x in f:
+                                    follow.add(x)
+                                break
+                            elif('ε' in f and idx != len(productions[i][j])-1):
+                                f.remove('ε')
+                                for k in f:
+                                    follow.add(k)
+                            
+                            elif('ε' in f and idx == len(productions[i][j])-1):
+                                f.remove('ε')
+                                for k in f:
+                                    follow.add(k)
+                                
+                                f = cal_follow(i, productions, first)
+                                for x in f:
+                                    follow.add(x)
+                            
+    return follow
+   
+def cal_first(s, productions):
+    
+    first = set()
+    
+    for i in range(len(productions[s])):
+        
+        for j in range(len(productions[s][i])):
+            
+            c = productions[s][i][j]
+            
+            if(c.isupper()):
+                f = cal_first(c, productions)
+                if('ε' not in f):
+                    for k in f:
+                        first.add(k)
+                    break
+                else:
+                    if(j == len(productions[s][i])-1):
+                        for k in f:
+                            first.add(k)
+                    else:
+                        f.remove('ε')
+                        for k in f:
+                            first.add(k)
+            else:
+                first.add(c)
+                break
+                
+    return first
+
+
+@app.route('/startproj', methods=['GET', 'POST'])
+def display_first_follow():
+    first = {}
+    follow = {}
+
+    if request.method == 'POST':
+        # Get the uploaded file
+        uploaded_file = request.files['file']
+        
+        if uploaded_file.filename != '':
+            # Save the uploaded file to the server
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
+            uploaded_file.save(file_path)
+
+            # Parse the grammar from the uploaded file
+            productions = {}
+            with open(file_path, 'r') as grammar_file:
+                for prod in grammar_file:
+                    l = re.split("( /->/\n/)*", prod)
+                    m = []
+                    for i in l:
+                        if (i == "" or i == None or i == '\n' or i == " " or i == "-" or i == ">"):
+                            pass
+                        else:
+                            m.append(i)
+                    
+                    left_prod = m.pop(0)
+                    right_prod = []
+                    t = []
+                    
+                    for j in m:
+                        if(j != '|'):
+                            t.append(j)
+                        else:
+                            right_prod.append(t)
+                            t = []
+                    
+                    right_prod.append(t)
+                    productions[left_prod] = right_prod
+
+            # Calculate FIRST and FOLLOW sets
+            for s in productions.keys():
+                first[s] = cal_first(s, productions)
+
+            for s in productions.keys():
+                follow[s] = cal_follow(s, productions, first)
+
+            # Remove the uploaded file
+            os.remove(file_path)
+
+    return render_template('index.html', first=first, follow=follow)
+
 
 if __name__ == '__main__':
-    if not os.path.exists('uploads'):
-        os.makedirs('uploads')
+    app.config['UPLOAD_FOLDER'] = 'uploads'
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     app.run(debug=True)

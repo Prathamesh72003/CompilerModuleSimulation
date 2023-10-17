@@ -95,7 +95,7 @@
     <nav>
       <a class="item" id="home" onclick="toggleSection('sec1')" style="text-decoration: none; color: white;">Tokenization</a>
       <a class="item" id="about" onclick="toggleSection('sec2')" style="text-decoration: none; color: white;">Symbol Table</a>
-      <div class="item" id="skills" onclick="toggleSection('sec3')" style="text-decoration: none; color: white;">Macro To C</div>
+      <div class="item" id="skills" onclick="toggleSection('sec3')" style="text-decoration: none; color: white;">First And Follow</div>
       <a class="item" id="contact" onclick="toggleSection('sec4')" style="text-decoration: none; color: white;">Three Code Genration</a>
       <div class="underline" id="underline"></div>
     </nav>
@@ -120,23 +120,23 @@
       <div id="symboloutput"></div>
 
       <style>
-      /* Add styles for the table */
+    
       table {
       border-collapse: collapse;
-      width: 80%; /* Adjust the width as needed */
-      margin: 20px auto; /* Center the table and add some margin */
-      border-radius: 10px; /* Add rounded corners to the table */
-      overflow: hidden; /* Hide the table's overflow content */
+      width: 80%;
+      margin: 20px auto;
+      border-radius: 10px; 
+      overflow: hidden;
       box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); 
       }
 
       table, th, td {
-      border: 2px solid white; /* Add border to table, th, and td */
-      color: white; /* Text color */
+      border: 2px solid white; 
+      color: white;
       }
 
       th, td {
-      padding: 10px; /* Adjust padding as needed */
+      padding: 10px; 
       text-align: center;
       border-bottom: 1px solid #ddd;
 
@@ -147,14 +147,13 @@
 
       }
 
-      /* Move the table slightly below the section */
       #symboloutput table {
-      margin-top: 50px; /* Adjust the margin-top as needed */
+      margin-top: 50px; 
       }
 
       .glow:hover {
       transition: 0.3s;
-      box-shadow: 0 0 20px 5px rgba(0, 255, 0, 0.8); /* Change the color and size as desired */
+      box-shadow: 0 0 20px 5px rgba(0, 255, 0, 0.8); 
       }
       </style>
 
@@ -163,7 +162,25 @@
 
     <section id="sec3">  
 
-      <h1>MACRO TO C CODE</h1>
+      <h1>First And Follow</h1>
+      <form action="/startproj" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".txt" required>
+        <button type="button" onclick="funcc()">Calculate FIRST and FOLLOW</button>
+    </form>
+
+    <h1>FIRST Sets</h1>
+    <ul>
+        {% for lhs, rhs in first.items() %}
+            <li>{{ lhs }} : {{ rhs }}</li>
+        {% endfor %}
+    </ul>
+
+    <h1>FOLLOW Sets</h1>
+    <ul>
+        {% for lhs, rhs in follow.items() %}
+            <li>{{ lhs }} : {{ rhs }}</li>
+        {% endfor %}
+    </ul>
 
     </section>
 
@@ -180,6 +197,10 @@
 
 
     <script>
+
+      function funcc(){
+        alert("ey");
+      }
 
     const items = document.querySelectorAll('.item');
     const underline = document.getElementById('underline');
