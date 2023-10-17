@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Intermediate Code Generator</title>
+  <style>
+    * {
+    box-sizing: border-box;
+  }
+  
+  :root {
+    --color-primary: #c484cc;
+  }
+  
+  body {
+    font-family: monospace;
+    background: #12161f;
+    color: white;
+    margin: 0;
+    height: 94vh;
+    display: grid;
+    place-items: center;
+  }
+  
+  nav {
+    position: fixed;
+    background: #3f2d41;
+    font-weight: 400;
+    font-size: 0;
+    display: flex;
+    padding: 0;
+    width: 80%;
+    top: 0;
+    margin-top: 30px;
+  }
+  
+  nav .item {
+    font-size: 0.8rem;
+    display: inline-block;
+    position: relative;
+    padding: 0 20px;
+    cursor: pointer;
+    z-index: 5;
+    min-width: 25%;
+    height: 60px;
+    line-height: 60px;
+    text-align: center;
+  }
+  
+  .dropdown {
+    overflow: hidden;
+    list-style: none;
+    position: absolute;
+    padding: 0;
+    width: 100%;
+    left: 0;
+    top: 62px;
+  }
+  .dropdown > div {
+    transform: translate(0, -100%);
+    transition: all 0.5s 0.1s;
+    position: relative;
+  }
+  
+  .dropdown a {
+    display: block;
+    padding: 0;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    background: var(--color-primary);
+  }
+  
+  .dropdown a:hover {
+    background: #a567ad;
+  }
+  .underline {
+  height: 6px;
+  background: var(--color-primary);
+  position: absolute;
+  bottom: 0;
+  width: 25%;
+  z-index: 2;
+  pointer-events: none;
+  transition: 0.35s;
+}
+
+.nav-selected {
+  transform: translate(0);
+}
+
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="item" id="home" onclick="toggleSection('sec1')" style="text-decoration: none; color: white;">Tokenization</a>
+    <a class="item" id="about" onclick="toggleSection('sec2')" style="text-decoration: none; color: white;">Symbol Table</a>
+    <div class="item" id="skills" onclick="toggleSection('sec3')" style="text-decoration: none; color: white;">Macro To C</div>
+    <a class="item" id="contact" onclick="toggleSection('sec4')" style="text-decoration: none; color: white;">Three Code Genration</a>
+    <div class="underline" id="underline"></div>
+  </nav>
+  
+
+  <section id="sec1">  
+
+    <h1>Tokenization</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" name="file" id="file" accept=".txt">
+        <button type="button" onclick="uploadFile()">Tokenize</button>
+    </form>
+    <div id="output"></div>
+
+  </section>
+
+  <section id="sec2">  
+
+    <h1>Symbol Table Generator</h1>
+    <form id="fileUploadForm" enctype="multipart/form-data">
+        <input type="file" name="file" id="fileInput">
+        <button type="submit" id="submitButton">Generate Symbol Table</button>
+    </form>
+    <div id="symboloutput"></div>
+
+  </section>
+
+  <section id="sec3">  
+
+    <h1>MACRO TO C CODE</h1>
+
+  </section>
+
+  <section id="sec4">  
+
+    <h1>Intermediate Code Generator</h1>
+    <label for="expression">Enter Expression:</label>
+    <input type="text" id="expression" placeholder="e.g., a + b * c" /><br /><br />
+    <button onclick="generateCode()">Generate Three Address Code</button>
+    <br /><br />
+    <div id="threecodeoutput"></div>
+
+  </section>
+
+  <script>
+
+    const items = document.querySelectorAll('.item');
+    const underline = document.getElementById('underline');
+
+    items.forEach(item => {
+      item.addEventListener('click', () => {
+        items.forEach(item => item.classList.remove('nav-selected'));
+
+        item.classList.add('nav-selected');
+
+        const itemWidth = item.offsetWidth;
+        const itemOffsetLeft = item.offsetLeft;
+        underline.style.transform = `translate(${itemOffsetLeft}px, 0)`;
+        underline.style.width = `${itemWidth}px`;
+      });
+    });
+
+    document.getElementById('homeSection').style.display = 'block';
+
+    function toggleSection(sectionId) {
+      const sections = document.querySelectorAll('section');
+      sections.forEach(section => {
+        section.style.display = 'none';
+      });
+
+      const selectedSection = document.getElementById(`${sectionId}`);
+      selectedSection.style.display = 'block';
+    }
+
+    // SCRIPT FUNCTION FOR TOKENIZATION
+    function uploadFile() {
+        const fileInput = document.getElementById('file');
+        const file = fileInput.files[0];
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        fetch('/tokenize', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('output').innerText = data;
+        });
+      }
+
+    // SCRIPT FOR THREE CODE GEN
+    function generateCode() {
+      const expression = document.getElementById('expression').value;
+      const formData = new FormData();
+      formData.append('expression', expression);
+
+      fetch('/generate_code', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('threecodeoutput').innerText = data;
+      })
+      .catch(error => console.error('Error:', error));
+    }
+  </script>
+
+<script>
+  const fileInput = document.getElementById('fileInput');
+  const submitButton = document.getElementById('submitButton');
+  const outputDiv = document.getElementById('symboloutput');
+  const fileUploadForm = document.getElementById('fileUploadForm');
+
+  fileUploadForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const file = fileInput.files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+          const response = await fetch('/generate_symbol_table', {
+              method: 'POST',
+              body: formData
+          });
+
+          if (response.ok) {
+              const data = await response.json();
+              displaySymbolTable(data);
+          } else {
+              outputDiv.innerHTML = `<p>Error generating symbol table.</p>`;
+          }
+      } catch (error) {
+          outputDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+      }
+  });
+
+  function displaySymbolTable(data) {
+      const keyOrder = ['id', 'datatype', 'input_value', 'return_type', 'arguments'];
+
+      let tableHTML = '<table border="1"><tr>';
+      for (const key of keyOrder) {
+          tableHTML += `<th>${key}</th>`;
+      }
+      tableHTML += '</tr>';
+
+      const numRows = data['id'].length;
+      for (let i = 0; i < numRows; i++) {
+          tableHTML += '<tr>';
+          for (const key of keyOrder) {
+              tableHTML += `<td>${data[key][i]}</td>`;
+          }
+          tableHTML += '</tr>';
+      }
+
+      tableHTML += '</table>';
+      outputDiv.innerHTML = tableHTML;
+  }
+
+</script>
+</body>
+</html>
