@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect, url_for
 from typing import List
 import re
 import os
@@ -37,21 +37,24 @@ class Tokenizer:
         '''
         Actual scanning lexical analysis happens here         
         '''
-        keywords: List[str] = ["main", "int", "float", "double", "long",
+        keywords: List[str] = [ "int", "float", "double", "long",
                                "short", "string", "char", "if", "else", "while",
                                "do", "break", "continue"]
-        operators: List[str] = ["+", "-", "*", "/", "<", ">", "=", "|", "&", "^", "~", "%"]
+        operators: List[str] = ["+", "-", "*", "/", "<", ">", "=", "|", "&", "^", "%"]
         punctuations: List[str] = ["{", "}", "(", ")", ";", "[", "]", ".", "&"]
         identifiers = r'\b[A-Za-z_][A-Za-z0-9_]*\b'
         constants = r'\b[0-9][0-9]*\b'
+        spec: List[str] = ["~", "_"]
         
         if lex in keywords:
             return [lex, 'Keyword'] 
+        elif lex in spec:
+            return [lex, 'Special Characters']
         elif lex in operators:
             return [lex, 'Operator'] 
         elif lex in punctuations:
-            return [lex, 'Punctuation']
-        elif re.findall(identifiers, lex):
+            return [lex, 'Punctuators']
+        elif re.findall(identifiers, lex) or lex == 'main':
             return [lex, 'Identifier']
         elif re.findall(constants, lex):
             return [lex, 'Constant']
