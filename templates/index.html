@@ -88,6 +88,29 @@
     transform: translate(0);
     }
 
+    #fileContent {
+      padding: 20px;
+      margin-top: 20px;
+      background-color: #fff;
+      color: #12161f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-right: 150px;
+      font-size: 30px;
+    }
+    #symfileContent {
+      padding: 20px;
+      margin-top: 20px;
+      background-color: #fff;
+      color: #12161f;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-right: 150px;
+      font-size: 20px;
+    }
+
     </style>
   </head>
   <body>
@@ -107,7 +130,10 @@
         <input type="file" name="file" id="file" accept=".txt">
         <button type="button" onclick="uploadFile()">Tokenize</button>
     </form>
+    <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-around;">
+      <div id="fileContent" style="display: none;"></div>
     <div id="output"></div>
+    </div>
 </section>
 
     <section id="sec2">  
@@ -117,7 +143,10 @@
         <input type="file" name="file" id="fileInput">
         <button type="submit" id="submitButton">Generate Symbol Table</button>
       </form>
+      <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-around;">
+        <div id="symfileContent" style="display: none;"></div>
       <div id="symboloutput"></div>
+      </div>
 
       <style>
     
@@ -165,7 +194,7 @@
       <h1>First And Follow</h1>
       <form action="/startproj" method="post" enctype="multipart/form-data">
         <input type="file" name="file" accept=".txt" required>
-        <button type="button" onclick="funcc()">Calculate FIRST and FOLLOW</button>
+        <button type="submit">Calculate FIRST and FOLLOW</button>
     </form>
 
     <h1>FIRST Sets</h1>
@@ -198,10 +227,6 @@
 
     <script>
 
-      function funcc(){
-        alert("ey");
-      }
-
     const items = document.querySelectorAll('.item');
     const underline = document.getElementById('underline');
 
@@ -232,8 +257,25 @@
 
     // SCRIPT FUNCTION FOR TOKENIZATION
         function uploadFile() {
+        document.getElementById('fileContent').style.display = 'block';
         const fileInput = document.getElementById('file');
         const file = fileInput.files[0];
+
+        if (file) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+          const fileContent = e.target.result;
+          const formattedContent = fileContent.replace(/\n/g, '<br>');
+          const fileContentDisplay = document.getElementById('fileContent');
+          fileContentDisplay.innerHTML = formattedContent;
+        };
+        
+        reader.readAsText(file);
+      } else {
+        alert('Please select a file.');
+      }
+
 
         const formData = new FormData();
         formData.append('file', file);
@@ -312,11 +354,28 @@
     const fileUploadForm = document.getElementById('fileUploadForm');
 
     fileUploadForm.addEventListener('submit', async (event) => {
+      document.getElementById('symfileContent').style.display = 'block';
       event.preventDefault();
 
       const file = fileInput.files[0];
       const formData = new FormData();
       formData.append('file', file);
+
+      if (file) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+          const fileContent = e.target.result;
+          const formattedContent = fileContent.replace(/\n/g, '<br>');
+          const fileContentDisplay = document.getElementById('symfileContent');
+          fileContentDisplay.innerHTML = formattedContent;
+        };
+        
+        reader.readAsText(file);
+      } else {
+        alert('Please select a file.');
+      }
+
 
       try {
         const response = await fetch('/generate_symbol_table', {

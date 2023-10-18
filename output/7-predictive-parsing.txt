@@ -1,0 +1,17 @@
+$E         $id*id+id
+$AT        $id*id+id
+$ABF       $id*id+id
+$ABid      $id*id+id
+$AB        $id*id+
+$A         $id*id+
+$AT+       $id*id+
+$AT        $id*id
+$ABF       $id*id
+$ABid      $id*id
+$AB        $id*
+$ABF*      $id*
+$ABF       $id
+$ABid      $id
+$AB        $
+$A         $
+$          $
